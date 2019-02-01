@@ -65,6 +65,7 @@ class MessageHandler extends Thread {
     private Boolean m_parked;
     // amount of nanoseconds the thread is parked when deactivated
     private Long m_parkNanos = 1000000l;
+    private AtomicBoolean m_blocked;
 
     private volatile boolean m_overprovisioning;
     private volatile boolean m_shutdown;
@@ -87,6 +88,7 @@ class MessageHandler extends Thread {
         m_overprovisioning = p_overprovisioning;
 
         m_markedForParking = new AtomicBoolean(false);
+        m_blocked = new AtomicBoolean(false);
         m_parked = false;
     }
 
@@ -118,6 +120,18 @@ class MessageHandler extends Thread {
      */
     void unmarkForParking() {
         m_markedForParking.set(false);
+    }
+
+    void setBlocked() {
+        m_blocked.set(true);
+    }
+
+    void setDeBlocked() {
+        m_blocked.set(false);
+    }
+
+    boolean getBlocked() {
+        return m_blocked.get();
     }
 
     /**
